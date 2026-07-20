@@ -1,0 +1,119 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.ledge.co/api-reference/fundamentals/authentication and
+  https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions,
+  corroborated by the live Auth0 discovery documents in well-known/ and by
+  openapi/ledge-api-openapi.yml.
+docs: https://docs.ledge.co/api-reference/fundamentals/authentication
+description: >-
+  Ledge authenticates API callers with an OAuth 2.0 client_credentials grant
+  issued by its Auth0 tenant, and authorizes them with a role-based fine-grained
+  permissions model rather than with token scopes. Human access to the web
+  application supports enterprise SAML 2.0 SSO with SCIM 2.0 provisioning.
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - clientCredentials
+  scopes_published: false
+  authorization_model: role-based fine-grained permissions
+schemes:
+- name: oauth2ClientCredentials
+  type: oauth2
+  primary: true
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://goledge.us.auth0.com/oauth/token
+    scopes: 0
+  credential_source: >-
+    Client ID and client secret are obtained on the Ledge Developers page at
+    https://app.goledge.io/developers, which also shows the Organization ID
+    (orgId) required as a path segment on every operation.
+  request:
+    method: POST
+    url: https://goledge.us.auth0.com/oauth/token
+    content_type: application/x-www-form-urlencoded
+    parameters:
+    - grant_type=client_credentials
+    - client_id
+    - client_secret
+    - audience
+  response_fields: [access_token, token_type, expires_in]
+  token_type: Bearer
+  token_lifetime_seconds: 10800
+  token_lifetime_note: >-
+    Observed in the documented example response; Ledge does not publish a
+    guaranteed lifetime, so refresh on 401 rather than assuming this value.
+  presentation: 'Authorization: Bearer <access_token>'
+  identity_provider:
+    vendor: Auth0
+    tenant: https://goledge.us.auth0.com
+    custom_domain: https://auth.goledge.io
+    discovery:
+    - well-known/ledge-openid-configuration.json
+    - well-known/ledge-oauth-authorization-server.json
+    - well-known/ledge-auth-openid-configuration.json
+  sources:
+  - https://docs.ledge.co/api-reference/fundamentals/authentication
+  - openapi/ledge-api-openapi.yml
+authorization:
+  model: role-based fine-grained permissions
+  docs: https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions
+  description: >-
+    Administrators define permissions that fit their organization's needs with
+    role-based access, using either built-in or custom roles. There are no named
+    OAuth scopes on the access token; the role attached to the principal decides
+    what data is available.
+  builtin_roles:
+  - name: Administrator
+    access: Full access to all resources; user management control
+  - name: Full member
+    access: Full access to all resources
+  - name: View-only
+    access: Read-only access to all resources
+  custom_roles: >-
+    Custom roles can be used to allow, or deny, access to specific resources.
+  failure_mode: >-
+    A role that denies a resource yields HTTP 403 ("The request was rejected for
+    security reasons"), which is not retryable.
+  detail: scopes/ledge-scopes.yml
+enterprise_sso:
+  saml:
+    supported: true
+    version: '2.0'
+    docs: https://docs.ledge.co/authentication/how-to-guide-configure-saml-sso-with-ledge
+    acs_url: https://auth.goledge.io/login/callback?connection={your-ledge-workspace}
+    sp_entity_id: urn:auth0:goledge:{your-ledge-workspace}
+    nameid_format: urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+    signature_algorithm: RSA-SHA256
+    required_claims:
+    - http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+    - http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname
+    - http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
+    - http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
+    idps_documented: [Okta, JumpCloud, Microsoft Entra ID, Google Workspace, OneLogin]
+    setup: >-
+      IdP metadata is sent to the customer's Ledge Customer Experience Manager to
+      complete configuration — there is no self-serve SSO setup.
+  scim:
+    supported: true
+    version: '2.0'
+    docs: https://docs.ledge.co/authentication/how-to-guide-configure-scim-provisioning-with-ledge
+    auth: Bearer token, per SCIM 2.0
+    base_url: Issued per-account by Ledge (not a published URL)
+    enablement: >-
+      SCIM is enabled per account by the customer's Ledge Customer Experience
+      Manager, who provides the SCIM Bearer Token and SCIM Base URL.
+    schemas: SCIM core and Enterprise schemas
+    limitations:
+    - Group membership is not synced — Ledge does not consume the SCIM /groups endpoint.
+    - Custom schema extensions are not consumed.
+notes:
+- >-
+  The API host api.goledge.io serves no /.well-known/ discovery document; the
+  OAuth metadata lives on the Auth0 tenant.
+- >-
+  Ledge publishes no API-key-only authentication path. The Getting Started page
+  and the 401 message refer to an "API key", but the documented mechanism is
+  the OAuth client credential pair.
