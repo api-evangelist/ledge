@@ -1,0 +1,207 @@
+openapi: 3.1.0
+info:
+  title: Ledge Sources API
+  version: '1.0'
+  x-generated: '2026-07-19'
+  x-method: generated
+  x-source: Generated faithfully from the published Ledge API reference at https://docs.ledge.co/api-reference/ (Getting Started, Fundamentals, Authentication, Fine-Grained Permissions, Pagination, Status Codes, Error Handling, Sources, Transactions, Querying). Ledge does not publish an OpenAPI description; every path, parameter, schema field, enum value and status code below is transcribed from those pages. The server host was verified by probing the documented path (GET /v1/api/{orgId}/sources on https://api.goledge.io returns HTTP 401 with the documented JSON error envelope). No operation, field or value was invented.
+  description: The Ledge REST API provides direct access to Transaction data, including transactions, matching and reconciliation status. It also provides Sources information, such as fetching times, files fetched, and any issues with fetching or parsing the data. Ledge is an AI-powered close management, reconciliation and payment-operations platform for finance teams.
+  contact:
+    name: Ledge
+    url: https://www.ledge.co/contact-us
+  termsOfService: https://www.ledge.co/terms-of-service
+servers:
+- url: https://api.goledge.io
+  description: Production API host
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Sources
+  description: Data sources connected to Ledge (banks, payment service providers, ERPs, databases) and the datasets fetched from them.
+paths:
+  /v1/api/{orgId}/sources:
+    get:
+      operationId: getSources
+      summary: List sources
+      description: Retrieve the list of Sources, including information on fetching times, files fetched, and any issues with fetching or parsing the data.
+      tags:
+      - Sources
+      parameters:
+      - $ref: '#/components/parameters/orgId'
+      responses:
+        '200':
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Source'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+components:
+  responses:
+    ServiceUnavailable:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The request was unauthorized, please check your API key and contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: 401
+              status: Unauthorized
+              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+              message: The request could not be authorized
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The request was rejected for security reasons, contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Source:
+      type: object
+      description: A data source connected to Ledge and the datasets fetched from it.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The Source ID
+        datasets:
+          type: array
+          description: A collection of Dataset objects
+          items:
+            $ref: '#/components/schemas/Dataset'
+    FetchedFile:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The file name.
+        fetchTime:
+          type: integer
+          description: Epoch timestamp in milliseconds when the file was fetched.
+    Error:
+      type: object
+      description: Errors are returned as JSON objects with an `error` envelope. The documented shape carries `code` and `message`; live responses observed on api.goledge.io additionally carry `status` and a `request` correlation id.
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              description: Error code (the HTTP status code in observed responses).
+              oneOf:
+              - type: string
+              - type: integer
+            status:
+              type: string
+              description: Reason phrase for the error.
+            request:
+              type: string
+              format: uuid
+              description: Correlation id for the request, quote it when contacting Ledge support.
+            message:
+              type: string
+              description: Human-readable description of the error.
+      required:
+      - error
+    Dataset:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The dataset ID
+        name:
+          type: string
+          description: The dataset name
+        revision:
+          type: integer
+          description: An incremental integer representing the current dataset revision.
+        status:
+          type: string
+          description: The dataset status.
+          enum:
+          - pending
+          - active
+          - deactivated
+        createdAt:
+          type: integer
+          description: Epoch timestamp in milliseconds for creation of the dataset.
+        lastUpdatedBy:
+          type: string
+          description: The last principal to update the dataset.
+        lastUpdatedAt:
+          type: integer
+          description: Epoch timestamp in milliseconds for updates to the dataset (e.g. schema changes, rename, etc.).
+        lastReceived:
+          type: integer
+          description: Epoch timestamp in milliseconds for last time the dataset was updated with new data.
+        latestTimestamp:
+          type: integer
+          description: Epoch timestamp in milliseconds for the latest transaction on the dataset (i.e. "as-of" indication).
+        failures:
+          type: array
+          description: A collection of descriptions of failures in fetching and parsing data for the dataset.
+          items:
+            $ref: '#/components/schemas/Failure'
+        lastFile:
+          allOf:
+          - $ref: '#/components/schemas/FetchedFile'
+          description: Details of the last file received into the dataset.
+    Failure:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The failure type.
+        count:
+          type: integer
+          description: Number of occurrences of the failure.
+  parameters:
+    orgId:
+      name: orgId
+      in: path
+      required: true
+      description: Organization ID, can be found on the Developers page (https://app.goledge.io/developers).
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: Obtain a client ID and generate a client secret on the Ledge Developers page (https://app.goledge.io/developers), then request an access token from the Ledge Auth0 tenant using the client_credentials grant. The response carries access_token, token_type (Bearer) and expires_in (10800 seconds observed in the documented example). Ledge does not document named OAuth scopes; authorization is enforced by Ledge's role-based fine-grained permissions model (https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions).
+      flows:
+        clientCredentials:
+          tokenUrl: https://goledge.us.auth0.com/oauth/token
+          scopes: {}
+externalDocs:
+  description: Ledge API reference
+  url: https://docs.ledge.co/api-reference/getting-started

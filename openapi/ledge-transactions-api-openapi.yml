@@ -1,0 +1,372 @@
+openapi: 3.1.0
+info:
+  title: Ledge Sources Transactions API
+  version: '1.0'
+  x-generated: '2026-07-19'
+  x-method: generated
+  x-source: Generated faithfully from the published Ledge API reference at https://docs.ledge.co/api-reference/ (Getting Started, Fundamentals, Authentication, Fine-Grained Permissions, Pagination, Status Codes, Error Handling, Sources, Transactions, Querying). Ledge does not publish an OpenAPI description; every path, parameter, schema field, enum value and status code below is transcribed from those pages. The server host was verified by probing the documented path (GET /v1/api/{orgId}/sources on https://api.goledge.io returns HTTP 401 with the documented JSON error envelope). No operation, field or value was invented.
+  description: The Ledge REST API provides direct access to Transaction data, including transactions, matching and reconciliation status. It also provides Sources information, such as fetching times, files fetched, and any issues with fetching or parsing the data. Ledge is an AI-powered close management, reconciliation and payment-operations platform for finance teams.
+  contact:
+    name: Ledge
+    url: https://www.ledge.co/contact-us
+  termsOfService: https://www.ledge.co/terms-of-service
+servers:
+- url: https://api.goledge.io
+  description: Production API host
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Transactions
+  description: Transactions, their matches, and their reconciliation status.
+paths:
+  /v1/api/{orgId}/transactions:
+    post:
+      operationId: queryTransactions
+      summary: Query transactions
+      description: Retrieve the list of Transactions, their matches, and their reconciliation status. Filters are expressed as an array of composable typed SearchQuery objects combined with an AND operator.
+      tags:
+      - Transactions
+      parameters:
+      - $ref: '#/components/parameters/orgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionQuery'
+            examples:
+              filterByDescription:
+                summary: Filter transactions by description within a date range
+                value:
+                  datasetId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  limit: 100
+                  offset: 0
+                  from: 1704067200000
+                  to: 1706745600
+                  search:
+                  - path: Description
+                    search:
+                      type: string
+                      value: INV-340174
+      responses:
+        '200':
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+              examples:
+                unmatchedAchCredit:
+                  value:
+                  - id: bb3e52d3-ce21-44be-b16c-e28f7d3d44da
+                    datasetId: 8872aec1-6a21-423b-a7ad-e813f4419f75
+                    reconciliationStatus: none
+                    incomingMatches: []
+                    outgoingMatches: []
+                    description: Transfer to Vendor A/INV-12345/Jan-2024 PYMT
+                    type: ACH Credit
+                    timestamp: 1704067200000
+        '204':
+          description: The request was successful, and no content is returned
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+components:
+  parameters:
+    orgId:
+      name: orgId
+      in: path
+      required: true
+      description: Organization ID, can be found on the Developers page (https://app.goledge.io/developers).
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    DateFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: date
+        value:
+          allOf:
+          - $ref: '#/components/schemas/NumberRange'
+          description: A NumberRange filter. All numbers in milliseconds.
+    NumberExpression:
+      type: object
+      properties:
+        operator:
+          type: string
+          enum:
+          - ne
+          - ge
+          - gt
+          - le
+          - lt
+        value:
+          type: number
+          description: The filter value to apply.
+    SearchQuery:
+      type: object
+      description: Ledge uses a simple composable typed filter.
+      properties:
+        path:
+          type: string
+          description: Name of transaction field to apply the query to
+        search:
+          $ref: '#/components/schemas/SearchFilter'
+    TextFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: string
+        value:
+          description: The text or texts to search for.
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+        exact:
+          type: boolean
+    SearchFilter:
+      description: The search filter to apply. Can be any one of the following filter types.
+      oneOf:
+      - $ref: '#/components/schemas/TextFilter'
+      - $ref: '#/components/schemas/BooleanFilter'
+      - $ref: '#/components/schemas/DateFilter'
+      - $ref: '#/components/schemas/NumberFilter'
+      - $ref: '#/components/schemas/MoneyFilter'
+    NumberRange:
+      type: object
+      properties:
+        start:
+          type: number
+          description: The minimum value in the range.
+        end:
+          type: number
+          description: The maximum value in the range.
+        includeStart:
+          type: boolean
+          description: Is inclusive on the lower bound.
+        includeEnd:
+          type: boolean
+          description: Is inclusive on the upper bound.
+    BooleanFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: boolean
+        value:
+          type: boolean
+          description: The filter value to apply.
+    NumberFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: number
+        value:
+          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
+          oneOf:
+          - type: number
+          - type: array
+            items:
+              type: number
+          - $ref: '#/components/schemas/NumberExpression'
+          - $ref: '#/components/schemas/NumberRange'
+    Error:
+      type: object
+      description: Errors are returned as JSON objects with an `error` envelope. The documented shape carries `code` and `message`; live responses observed on api.goledge.io additionally carry `status` and a `request` correlation id.
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              description: Error code (the HTTP status code in observed responses).
+              oneOf:
+              - type: string
+              - type: integer
+            status:
+              type: string
+              description: Reason phrase for the error.
+            request:
+              type: string
+              format: uuid
+              description: Correlation id for the request, quote it when contacting Ledge support.
+            message:
+              type: string
+              description: Human-readable description of the error.
+      required:
+      - error
+    Match:
+      type: object
+      description: A reconciliation match between two transactions. The Ledge API reference names the Match[] type on incomingMatches/outgoingMatches but does not publish its field-level schema, so no properties are asserted here.
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Ledge ID for the line
+        datasetId:
+          type: string
+          format: uuid
+          description: Source ID, see Sources for more details.
+        reconciliationStatus:
+          type: string
+          description: The reconciliation status of the transaction.
+          enum:
+          - none
+          - partial
+          - full
+          - informative
+          - out of scope
+        incomingMatches:
+          type: array
+          description: List of matches in which the listed transaction is the origin.
+          items:
+            $ref: '#/components/schemas/Match'
+        outgoingMatches:
+          type: array
+          description: List of matches in which the listed transaction is the target.
+          items:
+            $ref: '#/components/schemas/Match'
+        description:
+          type: string
+          description: The value of the description field of the transaction.
+        type:
+          type: string
+          description: The value of the type field of the transaction.
+        timestamp:
+          type: integer
+          description: Epoch timestamp in milliseconds.
+    TransactionQuery:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          format: uuid
+          description: Source ID, see Sources for more details.
+        limit:
+          type: integer
+          description: Number of records to fetch.
+        offset:
+          type: integer
+          description: Offset into the result set. The maximum offset value is 500.
+          maximum: 500
+        from:
+          type: integer
+          description: Transaction epoch timestamp in milliseconds from which to fetch.
+        to:
+          type: integer
+          description: Transaction epoch timestamp in milliseconds to which to fetch.
+        integrationId:
+          type: string
+          format: uuid
+          description: Integration identifier, shown in the documented pagination examples.
+        search:
+          type: array
+          description: An array of filters, with an AND operator between criteria.
+          items:
+            $ref: '#/components/schemas/SearchQuery'
+        columns:
+          type: array
+          description: List of columns to include in the response.
+          items:
+            $ref: '#/components/schemas/SearchQuery'
+    MoneyFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: money
+        currencies:
+          type: array
+          description: A collection of ISO 4217 currency codes.
+          items:
+            type: string
+        value:
+          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
+          oneOf:
+          - type: number
+          - type: array
+            items:
+              type: number
+          - $ref: '#/components/schemas/NumberExpression'
+          - $ref: '#/components/schemas/NumberRange'
+  responses:
+    BadRequest:
+      description: The input data was malformed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServiceUnavailable:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The request was unauthorized, please check your API key and contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: 401
+              status: Unauthorized
+              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+              message: The request could not be authorized
+    GatewayTimeout:
+      description: The request exceeded the timeout. Try a smaller limit query parameter or contact Ledge for assistance.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The request was rejected for security reasons, contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: Obtain a client ID and generate a client secret on the Ledge Developers page (https://app.goledge.io/developers), then request an access token from the Ledge Auth0 tenant using the client_credentials grant. The response carries access_token, token_type (Bearer) and expires_in (10800 seconds observed in the documented example). Ledge does not document named OAuth scopes; authorization is enforced by Ledge's role-based fine-grained permissions model (https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions).
+      flows:
+        clientCredentials:
+          tokenUrl: https://goledge.us.auth0.com/oauth/token
+          scopes: {}
+externalDocs:
+  description: Ledge API reference
+  url: https://docs.ledge.co/api-reference/getting-started
