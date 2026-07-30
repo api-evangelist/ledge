@@ -1,21 +1,95 @@
 aid: ledge
 name: Ledge
-description: 'Ledge is a company surfaced as a portfolio company of nea and added to the API Evangelist
-  network as a stub for enrichment. Sector: fintech. This profile is a lead awaiting the enrichment pipeline.'
+description: >-
+  Ledge is an AI-powered close management, reconciliation and payment-operations
+  platform for finance teams. It centralizes transaction and payment data from a
+  company's entire stack — banks, payment service providers, ERPs, billing
+  systems, data warehouses and file feeds — and automates the work on top of it:
+  multiway transaction matching, account and payment reconciliation, automated
+  cash application, flux analysis, working papers, and journal entries posted
+  back to the ERP with review and approval built in. Its Agent Studio lets teams
+  build AI agents that execute close-checklist tasks, with human-in-the-loop
+  review, rationale, and a queryable audit trail. Ledge exposes a REST API over
+  its Sources and Transactions data, authorized with OAuth 2.0 client
+  credentials. Founded in 2022, the company raised a $9M seed round led by NEA
+  with participation from Vertex Ventures, FJ Labs and Picus Capital.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://cdn.prod.website-files.com/63aadf1c20f6a6eb95024394/68df18eebbbc304be738307c_Ledge%20%7C%20put%20your%20close%20on%20ait-pilot%20with%20a%20team%20of%20AI%20agents.png
 url: https://raw.githubusercontent.com/api-evangelist/ledge/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - nea
-x-tier: stub
-x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
 - Fintech
-apis: []
+- Accounting
+- Reconciliation
+- Financial Close
+- Payment Operations
+- Transaction Matching
+- Cash Application
+- Journal Entries
+- AI Agents
+- ERP Integration
+- Finance Automation
+apis:
+- aid: ledge:ledge-sources-api
+  name: Ledge Sources API
+  description: >-
+    Data sources connected to Ledge (banks, payment service providers, ERPs, databases) and the datasets
+    fetched from them.
+  humanURL: https://docs.ledge.co/api-reference/getting-started
+  baseURL: https://api.goledge.io
+  tags:
+  - Sources
+  properties:
+  - type: OpenAPI
+    url: openapi/ledge-sources-api-openapi.yml
+  - type: Documentation
+    url: https://docs.ledge.co/api-reference
+  - type: APIReference
+    url: https://docs.ledge.co/api-reference/getting-started
+  - type: Authentication
+    url: https://docs.ledge.co/api-reference/fundamentals/authentication
+  - type: Pagination
+    url: https://docs.ledge.co/api-reference/fundamentals/pagination
+  - type: ErrorCodes
+    url: https://docs.ledge.co/api-reference/fundamentals/status-codes
+- aid: ledge:ledge-transactions-api
+  name: Ledge Transactions API
+  description: Transactions, their matches, and their reconciliation status.
+  humanURL: https://docs.ledge.co/api-reference/getting-started
+  baseURL: https://api.goledge.io
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/ledge-transactions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.ledge.co/api-reference
+  - type: APIReference
+    url: https://docs.ledge.co/api-reference/getting-started
+  - type: Authentication
+    url: https://docs.ledge.co/api-reference/fundamentals/authentication
+  - type: Pagination
+    url: https://docs.ledge.co/api-reference/fundamentals/pagination
+  - type: ErrorCodes
+    url: https://docs.ledge.co/api-reference/fundamentals/status-codes
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -24,3 +98,70 @@ maintainers:
 common:
 - type: Website
   url: https://www.ledge.co
+- type: Portal
+  url: https://app.goledge.io/developers
+- type: Documentation
+  url: https://docs.ledge.co
+- type: APIReference
+  url: https://docs.ledge.co/api-reference/getting-started
+- type: GettingStarted
+  url: https://docs.ledge.co/api-reference/getting-started
+- type: Login
+  url: https://app.goledge.io
+- type: Blog
+  url: https://www.ledge.co/resources/articles
+- type: Pricing
+  url: https://www.ledge.co/pricing
+- type: Support
+  url: https://www.ledge.co/support-policy
+- type: StatusPage
+  url: https://status.ledge.co
+- type: Security
+  url: https://www.ledge.co/security
+- type: Compliance
+  url: security/ledge-trust-center.yml
+- type: TermsOfService
+  url: https://www.ledge.co/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.ledge.co/privacy-policy
+- type: GitHubOrganization
+  url: https://github.com/goledge
+- type: Integrations
+  url: https://www.ledge.co/integrations
+- type: LinkedIn
+  url: https://www.linkedin.com/company/ledge-finance
+- type: ChangeLog
+  url: https://docs.ledge.co/changelog
+- type: ChangeLog
+  url: changelog/ledge-changelog.yml
+- type: TrustCenter
+  url: security/ledge-trust-center.yml
+- type: DomainSecurity
+  url: security/ledge-domain-security.yml
+- type: OAuthScopes
+  url: scopes/ledge-scopes.yml
+- type: Authentication
+  url: authentication/ledge-authentication.yml
+- type: Conventions
+  url: conventions/ledge-conventions.yml
+- type: Conformance
+  url: conformance/ledge-conformance.yml
+- type: ErrorCatalog
+  url: errors/ledge-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/ledge-lifecycle.yml
+- type: DataModel
+  url: data-model/ledge-data-model.yml
+- type: MCPServer
+  url: mcp/ledge-mcp.yml
+- type: WellKnown
+  url: well-known/ledge-well-known.yml
+- type: LLMsTxt
+  url: llms/ledge-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
