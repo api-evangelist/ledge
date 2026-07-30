@@ -1,0 +1,71 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.ledge.co/changelog
+docs: https://docs.ledge.co/changelog
+description: >-
+  Ledge publishes a product changelog in the documentation, organised by year
+  and grouped into seasonal release posts rather than dated API versions. The
+  changelog covers platform and product capability; it is not an API-version
+  changelog, and no API breaking-change notices appear in it. Entries below are
+  the full published set at capture time.
+versioning:
+  scheme: seasonal product releases, grouped by year
+  api_versioning: URI path version (v1) — see lifecycle/ledge-lifecycle.yml
+  current: Spring Product Releases (June 2025)
+  breaking_change_notices: >-
+    None published. No entry announces a backwards-incompatible API change,
+    deprecation or removal.
+entries:
+- version: Spring Product Releases
+  date: '2025-06'
+  latest: true
+  url: https://docs.ledge.co/changelog/2025/spring-product-releases
+  breaking: []
+  additions:
+  - >-
+    Account reconciliation module — continuously match ERP activity against
+    bank feeds and PSPs, flag timing mismatches, unapplied transactions and
+    misclassified entries in real time
+  - >-
+    AI matching suggestions — inference-based matching across sources that parses
+    transaction metadata, free-form memos and remittance emails (including
+    attachments), with built-in explainability
+  - >-
+    AI journal entry suggestions for unexplained variances (FX drift, fee
+    absorption, unbooked refunds), drawing on transaction details, accounting
+    practice, historic posting and contextual signals
+  - >-
+    Audit Trail as a first-class page — every user action, match, override and
+    entry tracked and queryable, filterable by action type, account or period,
+    with export and per-record links
+  highlights:
+  - All AI outputs are human-in-the-loop by default, with rationale and traceability for audit
+- version: Fall Product Releases
+  date: '2024-11'
+  url: https://docs.ledge.co/changelog/2024/fall-product-releases
+  breaking: []
+  additions:
+  - >-
+    Automated advanced journal entries — creation and posting directly to the
+    ERP, with an improved accounting rule builder covering intercompany,
+    multi-currency and advanced classification, plus approval workflows and an
+    audit trail linking back to the ERP ledger
+  - >-
+    Cash application — end-to-end reconciliation of cash flows including
+    invoice-to-cash matching, vendor bill application, deposits for customer
+    prepayments and UDF accounts, with structured approval workflows and direct
+    ERP posting
+  - >-
+    Drill-down pivot table reports with customizable data views, filtering,
+    slicing and export
+  - >-
+    Queue management updates — custom label tagging, rule-based filtering,
+    auto-assignment and daily email notifications for exceptions
+  - Infrastructure enhancements
+- version: Spring Product Releases
+  date: '2024-02'
+  url: https://docs.ledge.co/changelog/2024/spring-product-releases
+  breaking: []
+  additions: []
+  note: >-
+    Listed in the 2024 changelog index; contents not captured in this pass.

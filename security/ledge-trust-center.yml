@@ -1,0 +1,65 @@
+generated: '2026-07-19'
+method: searched
+probe: true
+source: https://www.ledge.co/security
+url: https://www.ledge.co/security
+trust_center: https://trust.ledge.co
+trust_center_platform: Vanta
+description: >-
+  Ledge publishes a security overview page at https://www.ledge.co/security that
+  names its compliance attestations and links to a Vanta-hosted trust center at
+  https://trust.ledge.co, where SOC reports, compliance certifications and
+  security policies are made available. The trust center is a client-rendered
+  Vanta application, so its document inventory is not machine-readable from the
+  HTML; the certifications below are quoted from the public security page.
+certifications:
+- name: SOC 1
+  evidence: Listed on https://www.ledge.co/security
+- name: SOC 2
+  evidence: Listed on https://www.ledge.co/security
+- name: ISO 42001
+  evidence: >-
+    Listed on https://www.ledge.co/security. ISO/IEC 42001 is the AI management
+    system standard, consistent with Ledge's AI-agent close-execution product.
+- name: GDPR
+  evidence: Listed on https://www.ledge.co/security
+practices:
+- name: Encryption
+  detail: Encryption in transit and at rest.
+  source: https://www.ledge.co/security
+- name: Penetration testing
+  detail: >-
+    Periodic third-party penetration testing; annual third-party penetration
+    test reports available under NDA.
+  source: https://www.ledge.co/security
+- name: Data processing agreement
+  detail: Standard DPA available for review and execution.
+  source: https://www.ledge.co/security
+- name: SAML 2.0 single sign-on
+  detail: >-
+    Enterprise SSO via any SAML 2.0 IdP (Okta, JumpCloud, Microsoft Entra ID,
+    Google Workspace, OneLogin) against the Auth0-backed auth.goledge.io.
+  source: https://docs.ledge.co/authentication/how-to-guide-configure-saml-sso-with-ledge
+- name: SCIM 2.0 provisioning
+  detail: >-
+    Automated user provisioning and deprovisioning from the IdP via SCIM 2.0
+    with bearer-token authentication. Group membership is not synced.
+  source: https://docs.ledge.co/authentication/how-to-guide-configure-scim-provisioning-with-ledge
+- name: Role-based fine-grained permissions
+  detail: >-
+    Built-in Administrator / Full member / View-only roles plus custom roles
+    that allow or deny access to specific resources.
+  source: https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions
+reports_available:
+- SOC reports (via trust center)
+- Compliance certifications (via trust center)
+- Security policies (via trust center)
+- Annual third-party penetration test report (under NDA)
+not_found:
+- >-
+  No /.well-known/security.txt on www.ledge.co, api.goledge.io or docs.ledge.co
+  (all 404 at probe time).
+- >-
+  No published vulnerability disclosure policy, responsible-disclosure page or
+  bug bounty program (HackerOne / Bugcrowd / Intigriti) was found.
+- No named ISO 27001, PCI DSS, HIPAA or FedRAMP claim on the public security page.

@@ -1,0 +1,115 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Ledge API
+  version: 1.0.0
+x-generated: '2026-07-19'
+x-method: generated
+x-source: >-
+  Captures the API Evangelist enrichment applied on top of
+  openapi/ledge-api-openapi.yml. Ledge publishes no OpenAPI of its own, so this
+  overlay records the cross-cutting semantics we documented separately
+  (conventions, errors, lifecycle, authentication, data model) as machine-readable
+  annotations, and links every operation back to its source documentation page.
+  It never mutates the underlying description.
+extends: ../openapi/ledge-api-openapi.yml
+actions:
+- target: $.info
+  description: Link the description to the enrichment artifacts in this repo.
+  update:
+    x-apis-io-artifacts:
+      conventions: conventions/ledge-conventions.yml
+      errors: errors/ledge-problem-types.yml
+      lifecycle: lifecycle/ledge-lifecycle.yml
+      authentication: authentication/ledge-authentication.yml
+      scopes: scopes/ledge-scopes.yml
+      conformance: conformance/ledge-conformance.yml
+      data_model: data-model/ledge-data-model.yml
+      changelog: changelog/ledge-changelog.yml
+      well_known: well-known/ledge-well-known.yml
+      trust_center: security/ledge-trust-center.yml
+- target: $.info
+  description: >-
+    Record the cross-cutting runtime semantics that OpenAPI cannot express, so
+    an agent reading only the spec still learns them.
+  update:
+    x-pagination:
+      style: offset-limit
+      params: [offset, limit]
+      max_offset: 500
+      transport: request body
+      envelope: none — list responses are bare JSON arrays
+    x-idempotency:
+      supported: false
+    x-rate-limits:
+      published: false
+      backpressure: HTTP 504 — retry with a smaller limit
+    x-error-format:
+      format: proprietary
+      envelope: error
+      rfc9457: false
+      correlation_id_field: error.request
+    x-versioning:
+      scheme: uri-path
+      current: v1
+    x-timestamps:
+      format: epoch-milliseconds
+- target: $.info
+  description: Record the SLA and operational status commitments published by Ledge.
+  update:
+    x-sla:
+      uptime_target: 99.9%
+      measurement: monthly
+      policy: https://www.ledge.co/support-policy
+    x-status-page: https://status.ledge.co
+    x-support-email: support@ledge.co
+- target: $.components.securitySchemes.oauth2ClientCredentials
+  description: >-
+    Annotate the authorization model — Ledge publishes no named OAuth scopes;
+    access is decided by role-based fine-grained permissions.
+  update:
+    x-authorization-model: role-based fine-grained permissions
+    x-builtin-roles: [Administrator, Full member, View-only]
+    x-scopes-published: false
+    x-identity-provider: Auth0
+    x-discovery: well-known/ledge-openid-configuration.json
+- target: $.paths['/v1/api/{orgId}/sources'].get
+  description: Link the operation to its documentation page and mark it read-only.
+  update:
+    externalDocs:
+      description: Sources — Ledge API reference
+      url: https://docs.ledge.co/api-reference/sources
+    x-safe: true
+    x-agent-skill: skills/ledge-audit-source-freshness.md
+- target: $.paths['/v1/api/{orgId}/transactions'].post
+  description: >-
+    Flag that this POST is a read-only query, not a mutation — important for
+    agents applying write-confirmation policies.
+  update:
+    externalDocs:
+      description: Transactions — Ledge API reference
+      url: https://docs.ledge.co/api-reference/transactions
+    x-safe: true
+    x-read-only-post: >-
+      Despite the POST verb this operation only queries; the request body carries
+      the filter grammar because it is too structured for a query string.
+    x-agent-skill: skills/ledge-find-unreconciled-transactions.md
+- target: $.components.schemas.Transaction.properties.reconciliationStatus
+  description: Document the semantics of each reconciliation status value.
+  update:
+    x-value-semantics:
+      none: No match has been found for this transaction.
+      partial: Matched for part of its value; a residual remains open.
+      full: Fully reconciled against one or more counterpart transactions.
+      informative: Recorded for context; not expected to reconcile.
+      out of scope: Explicitly excluded from reconciliation.
+    x-note: >-
+      Semantics inferred from the Ledge reconciliation documentation; the API
+      reference publishes the enum values without per-value definitions.
+- target: $.components.schemas.Match
+  description: Record why this schema is intentionally empty.
+  update:
+    x-incomplete: true
+    x-reason: >-
+      The Ledge API reference names the Match[] type on incomingMatches and
+      outgoingMatches but never publishes its fields. Left unspecified rather
+      than invented.

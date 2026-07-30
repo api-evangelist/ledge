@@ -1,0 +1,149 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  Derived from openapi/ledge-api-openapi.yml (securitySchemes, error schema,
+  pagination parameters) and searched against Ledge's published claims:
+  https://www.ledge.co/security,
+  https://docs.ledge.co/api-reference/fundamentals/*,
+  https://docs.ledge.co/authentication/*, and the live Auth0 discovery documents
+  saved in well-known/.
+description: >-
+  Which industry and cross-cutting standards the Ledge platform and API conform
+  to, with evidence. "conforms: false" is a real, expected result — it records
+  an absence we verified, not a defect.
+standards:
+- id: oauth2
+  conforms: true
+  evidence: >-
+    The API is authorized with an OAuth 2.0 client_credentials grant against
+    https://goledge.us.auth0.com/oauth/token, documented at
+    https://docs.ledge.co/api-reference/fundamentals/authentication.
+- id: oauth2-client-credentials
+  conforms: true
+  evidence: >-
+    grant_type=client_credentials is the documented and only published flow for
+    API access; client_credentials appears in grant_types_supported of
+    well-known/ledge-openid-configuration.json.
+- id: oidc
+  conforms: true
+  evidence: >-
+    The Auth0 tenants backing Ledge serve RFC 8414 / OIDC discovery documents at
+    https://goledge.us.auth0.com/.well-known/openid-configuration and
+    https://auth.goledge.io/.well-known/openid-configuration (both HTTP 200,
+    saved in well-known/). Note the API host api.goledge.io itself serves no
+    discovery document.
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: >-
+    https://goledge.us.auth0.com/.well-known/oauth-authorization-server returns
+    HTTP 200 (well-known/ledge-oauth-authorization-server.json).
+- id: bearer-token-auth
+  conforms: true
+  evidence: >-
+    Token responses carry "token_type": "Bearer"; SCIM provisioning likewise
+    uses standard bearer token authentication.
+- id: saml2
+  conforms: true
+  evidence: >-
+    SAML 2.0 SSO with any IdP, documented ACS URL
+    https://auth.goledge.io/login/callback?connection={workspace}, SP Entity ID
+    urn:auth0:goledge:{workspace}, emailAddress NameID format and RSA-SHA256
+    assertion signing
+    (https://docs.ledge.co/authentication/how-to-guide-configure-saml-sso-with-ledge).
+- id: scim
+  conforms: true
+  version: '2.0'
+  evidence: >-
+    SCIM 2.0 user provisioning with bearer-token auth against a Ledge-issued
+    SCIM base URL, mapping the SCIM core and Enterprise schemas
+    (https://docs.ledge.co/authentication/how-to-guide-configure-scim-provisioning-with-ledge).
+  limitations: >-
+    Ledge does not consume the SCIM /groups endpoint — group membership is not
+    synced, and custom schema extensions are not consumed.
+- id: pagination
+  conforms: true
+  evidence: >-
+    Offset/limit pagination on list-returning endpoints, maximum offset 500
+    (https://docs.ledge.co/api-reference/fundamentals/pagination).
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No idempotency key header or replay semantics are documented; "idempoten"
+    does not appear in the published documentation corpus.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors use a proprietary {"error": {code, status, request, message}}
+    envelope with content-type application/json, not application/problem+json
+    (errors/ledge-problem-types.yml).
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    No Sunset or Deprecation headers are documented, and no deprecation policy
+    is published (lifecycle/ledge-lifecycle.yml).
+- id: iso4217
+  conforms: true
+  evidence: >-
+    Money filters accept a currencies[] collection of ISO 4217 currency codes
+    (https://docs.ledge.co/api-reference/transactions/querying).
+- id: soc1
+  conforms: true
+  evidence: SOC 1 listed on https://www.ledge.co/security.
+- id: soc2
+  conforms: true
+  evidence: >-
+    SOC 2 listed on https://www.ledge.co/security; SOC reports are made
+    available through the Vanta trust center at https://trust.ledge.co.
+- id: iso42001
+  conforms: true
+  evidence: >-
+    ISO 42001 (AI management systems) listed on https://www.ledge.co/security.
+- id: gdpr
+  conforms: true
+  evidence: >-
+    GDPR listed on https://www.ledge.co/security; a standard DPA is available
+    for review and execution.
+- id: iso27001
+  conforms: false
+  evidence: Not named on the public security page or in any published material found.
+- id: pci-dss
+  conforms: false
+  evidence: >-
+    Not claimed. Ledge reconciles payment data from PSPs and banks but is not a
+    payment processor and publishes no PCI DSS attestation.
+- id: hipaa
+  conforms: false
+  evidence: Not claimed on https://www.ledge.co/security.
+- id: fedramp
+  conforms: false
+  evidence: Not claimed on https://www.ledge.co/security.
+- id: fapi
+  conforms: false
+  evidence: No Financial-grade API (FAPI) profile conformance claim published.
+- id: psd2
+  conforms: false
+  evidence: >-
+    Not applicable — Ledge is a reconciliation and close-management platform,
+    not a payment initiation or account information service provider.
+- id: openapi
+  conforms: false
+  evidence: >-
+    Ledge publishes no OpenAPI description; openapi/ledge-api-openapi.yml is
+    generated by API Evangelist from the published API reference.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No event, streaming or webhook surface is published — "webhook" does not
+    appear anywhere in the documentation corpus. Not applicable rather than
+    missing.
+- id: json-api
+  conforms: false
+  evidence: >-
+    Responses are bare JSON arrays and objects, not the JSON:API media type or
+    document structure.
+- id: odata
+  conforms: false
+  evidence: Ledge uses its own composable typed filter grammar, not OData.
+- id: fhir
+  conforms: false
+  evidence: Not applicable — financial operations domain.

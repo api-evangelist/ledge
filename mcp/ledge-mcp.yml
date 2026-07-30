@@ -1,0 +1,75 @@
+generated: '2026-07-19'
+method: derived
+status: candidate
+source: openapi/ledge-api-openapi.yml
+description: >-
+  Ledge does not publish an MCP server. Searched the documentation corpus
+  (docs.ledge.co/llms-full.txt — no occurrence of "MCP"), the ledge.co site and
+  the github.com/goledge organisation (0 public repositories); nothing found.
+  The tool list below is a CANDIDATE derived from the two published REST
+  operations, offered as a design proposal rather than as anything Ledge ships.
+  Do not treat these tool names as real.
+searched:
+- target: https://docs.ledge.co/llms-full.txt
+  result: no occurrence of "MCP"
+- target: https://www.ledge.co
+  result: no MCP or agent-integration page in the sitemap (203 URLs)
+- target: https://github.com/goledge
+  result: organisation exists (display name "Ledge") with 0 public repositories
+server: null
+tools:
+- name: ledge_list_sources
+  candidate: true
+  description: >-
+    List the data sources connected to a Ledge organization, with per-dataset
+    fetch times, last file received, freshness and ingestion failures.
+  operation: getSources
+  method: GET
+  path: /v1/api/{orgId}/sources
+  inputs:
+  - name: orgId
+    required: true
+    description: Organization UUID from the Ledge Developers page.
+- name: ledge_query_transactions
+  candidate: true
+  description: >-
+    Query transactions in a dataset with typed composable filters and a time
+    window, returning each transaction's reconciliation status and its incoming
+    and outgoing matches.
+  operation: queryTransactions
+  method: POST
+  path: /v1/api/{orgId}/transactions
+  inputs:
+  - name: orgId
+    required: true
+    description: Organization UUID from the Ledge Developers page.
+  - name: datasetId
+    required: false
+    description: Dataset UUID obtained from ledge_list_sources.
+  - name: from
+    required: false
+    description: Start of the window, epoch milliseconds.
+  - name: to
+    required: false
+    description: End of the window, epoch milliseconds.
+  - name: search
+    required: false
+    description: Array of SearchQuery filters, ANDed together.
+  - name: columns
+    required: false
+    description: Columns to include in the response.
+  - name: limit
+    required: false
+    description: Page size.
+  - name: offset
+    required: false
+    description: Page offset, maximum 500.
+notes:
+- >-
+  Auth for any such server would be the documented OAuth 2.0 client_credentials
+  grant against https://goledge.us.auth0.com/oauth/token — see
+  authentication/ledge-authentication.yml.
+- >-
+  Both candidate tools are read-only; the published Ledge API exposes no write
+  operations, so an MCP server over it would be safe to expose without
+  write-scoped confirmation prompts.

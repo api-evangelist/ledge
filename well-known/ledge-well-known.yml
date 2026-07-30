@@ -1,0 +1,77 @@
+generated: '2026-07-19'
+method: searched
+description: >-
+  Results of probing the /.well-known/ discovery surface for every host in
+  apis.yml and the OpenAPI servers[] (https://api.goledge.io), plus the Auth0
+  tenants that issue Ledge API access tokens. Status is the HTTP code observed
+  at fetch time. Only documents that returned a real, correctly-typed payload
+  were saved verbatim. Note that app.goledge.io answers HTTP 200 with an SPA
+  HTML shell for every path including /.well-known/*, so those are recorded as
+  present-but-not-a-real-document and not saved.
+hosts:
+- host: https://api.goledge.io
+  note: >-
+    Verified API host — the documented path GET /v1/api/{orgId}/sources returns
+    HTTP 401 with the documented JSON error envelope.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://www.ledge.co
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+- host: https://docs.ledge.co
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /llms.txt
+    status: 200
+    type: text/markdown
+    file: ../llms/ledge-llms.txt
+  - path: /llms-full.txt
+    status: 200
+    type: text/markdown
+    note: >-
+      Published (169 KB) but deliberately not committed — see .gitignore
+      (*-llms-full.txt).
+- host: https://app.goledge.io
+  note: >-
+    Single-page application. Returns HTTP 200 with a text/html shell for every
+    path, so a 200 here is not evidence a document exists. Nothing saved.
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    type: text/html
+    real_document: false
+- host: https://goledge.us.auth0.com
+  note: >-
+    Auth0 tenant that issues Ledge API access tokens via the documented
+    client_credentials grant.
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    type: application/json
+    file: ledge-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    type: application/json
+    file: ledge-oauth-authorization-server.json
+- host: https://auth.goledge.io
+  note: >-
+    Ledge's custom Auth0 domain, used as the SAML SSO callback host
+    (https://auth.goledge.io/login/callback?connection={workspace}).
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    type: application/json
+    file: ledge-auth-openid-configuration.json

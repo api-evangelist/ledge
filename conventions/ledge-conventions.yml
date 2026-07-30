@@ -1,0 +1,142 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.ledge.co/api-reference/fundamentals (Authentication, Fine-Grained
+  Permissions, Pagination, Status Codes, Error Handling) and
+  https://docs.ledge.co/api-reference/transactions/querying, cross-checked
+  against live responses observed on https://api.goledge.io.
+description: >-
+  How the Ledge REST API behaves across every operation: authentication style,
+  authorization model, pagination, the query/filter grammar, request tracing,
+  versioning, and the error envelope. These are the runtime-semantics
+  conventions that the OpenAPI description does not fully express.
+
+base_url: https://api.goledge.io
+api_style: REST over HTTPS, JSON request and response bodies
+path_convention: >-
+  Every operation is tenant-scoped under /v1/api/{orgId}/, where orgId is the
+  Organization UUID shown on the Developers page.
+
+authentication:
+  scheme: OAuth 2.0 client_credentials, Bearer access token
+  token_url: https://goledge.us.auth0.com/oauth/token
+  credentials: >-
+    Client ID and client secret are obtained on the Ledge Developers page at
+    https://app.goledge.io/developers.
+  token_lifetime: expires_in 10800 seconds in the documented example response
+  identity_provider: Auth0 (tenant goledge.us.auth0.com, custom domain auth.goledge.io)
+  docs: https://docs.ledge.co/api-reference/fundamentals/authentication
+  detail: authentication/ledge-authentication.yml
+
+authorization:
+  model: role-based fine-grained permissions
+  scopes: >-
+    No named OAuth scopes are documented. Access is determined by the caller's
+    role rather than by token scopes.
+  builtin_roles:
+  - name: Administrator
+    access: Full access to all resources; user management control
+  - name: Full member
+    access: Full access to all resources
+  - name: View-only
+    access: Read-only access to all resources
+  custom_roles: Custom roles can allow, or deny, access to specific resources.
+  docs: https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions
+  detail: scopes/ledge-scopes.yml
+
+idempotency:
+  supported: false
+  evidence: >-
+    Ledge documents no idempotency key header or replay semantics; the string
+    "idempoten" does not appear anywhere in the published documentation corpus
+    (docs.ledge.co/llms-full.txt). The two published operations are a GET and a
+    read-only POST query, so no unsafe write is currently exposed.
+
+pagination:
+  style: offset / limit
+  transport: >-
+    Sent in the JSON request body for POST /v1/api/{orgId}/transactions (the
+    documentation calls them query parameters, but the documented examples place
+    them in the body).
+  request_params:
+    offset: Zero-based record offset. Maximum offset value is 500.
+    limit: Number of records to fetch.
+  response_fields: >-
+    List endpoints return a bare JSON array; there is no envelope, cursor,
+    has_more flag or total count.
+  max_offset: 500
+  docs: https://docs.ledge.co/api-reference/fundamentals/pagination
+
+filtering:
+  style: composable typed filter objects
+  parameter: search[] — an array of SearchQuery, combined with an AND operator
+  shape: '{ "path": "<field name>", "search": { "type": ..., "value": ... } }'
+  filter_types: [string, boolean, number, money, date]
+  operators: [ne, ge, gt, le, lt]
+  ranges: NumberRange with start / end / includeStart / includeEnd
+  money: money filters accept an optional ISO 4217 currencies[] list
+  time_range: top-level from / to epoch-millisecond bounds
+  field_selection:
+    supported: true
+    parameter: columns[] — list of columns to include in the response
+  docs: https://docs.ledge.co/api-reference/transactions/querying
+
+timestamps:
+  format: epoch milliseconds (integer)
+  note: >-
+    Every time-bearing field (createdAt, lastUpdatedAt, lastReceived,
+    latestTimestamp, timestamp, from, to) is an integer epoch timestamp in
+    milliseconds, not an ISO 8601 string.
+
+identifiers:
+  format: UUID
+  note: >-
+    orgId, Source id, dataset id / datasetId and transaction id are all UUIDs.
+    Ledge does not use type-prefixed object ids.
+
+request_tracing:
+  supported: true
+  mechanism: >-
+    Error responses carry a `request` UUID inside the error envelope. It is not
+    documented, but is present in live responses from api.goledge.io and should
+    be quoted when contacting Ledge support.
+  example: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+
+versioning:
+  scheme: URI path version
+  current: v1
+  mechanism: The major version is the first path segment (/v1/api/...).
+  header: null
+  detail: lifecycle/ledge-lifecycle.yml
+
+error_envelope:
+  format: proprietary JSON envelope (not RFC 9457 problem+json)
+  documented_shape: '{ "error": { "code": "string", "message": "string" } }'
+  observed_shape: >-
+    Live responses add two fields the documentation omits:
+    { "error": { "code": 401, "status": "Unauthorized", "request": "<uuid>",
+    "message": "The request could not be authorized" } }
+  content_type: application/json
+  docs: https://docs.ledge.co/api-reference/fundamentals/error-handling
+  detail: errors/ledge-problem-types.yml
+
+rate_limiting:
+  documented: false
+  headers: none observed
+  note: >-
+    Ledge publishes no rate-limit policy and returns no RateLimit / Retry-After
+    headers on observed responses. The documented remedy for HTTP 504 is to
+    retry with a smaller `limit`, which is the only backpressure signal
+    published.
+
+timeouts:
+  note: >-
+    HTTP 504 indicates the request exceeded the server timeout; the documented
+    remedy is a smaller `limit` value.
+
+cross_references:
+  errors: errors/ledge-problem-types.yml
+  lifecycle: lifecycle/ledge-lifecycle.yml
+  authentication: authentication/ledge-authentication.yml
+  scopes: scopes/ledge-scopes.yml
+  conformance: conformance/ledge-conformance.yml

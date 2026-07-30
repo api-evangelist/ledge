@@ -1,0 +1,102 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.ledge.co/api-reference/fundamentals/status-codes and
+  https://docs.ledge.co/api-reference/fundamentals/error-handling, cross-checked
+  against a live response from https://api.goledge.io. Titles and remediation
+  are quoted from the Ledge status-code table.
+format: proprietary
+description: >-
+  Ledge does not use RFC 9457 application/problem+json. Errors are returned as
+  a JSON object with an `error` envelope. The documented envelope carries `code`
+  and `message`; live responses from api.goledge.io additionally carry `status`
+  and a `request` correlation UUID.
+content_type: application/json
+envelope:
+  field: error
+  documented_shape:
+    code: string
+    message: string
+  observed_shape:
+    code: integer — the HTTP status code
+    status: string — the HTTP reason phrase
+    request: string (uuid) — correlation id for support
+    message: string — human-readable description
+  observed_example:
+    error:
+      code: 401
+      status: Unauthorized
+      request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+      message: The request could not be authorized
+success_codes:
+- status: 200
+  title: OK
+  detail: The request was successful.
+- status: 204
+  title: No Content
+  detail: The request was successful, and no content is returned.
+errors:
+- status: 400
+  title: Bad Request
+  detail: The input data was malformed.
+  remediation: >-
+    Validate the request body against the documented schema — particularly the
+    SearchQuery filter grammar and the typed SearchFilter values.
+  operations: [queryTransactions]
+- status: 401
+  title: Unauthorized
+  detail: >-
+    The request was unauthorized, please check your API key and contact Ledge
+    for assistance.
+  remediation: >-
+    Request a fresh access token from https://goledge.us.auth0.com/oauth/token
+    using the client_credentials grant and send it as a Bearer token. Access
+    tokens expire (expires_in 10800 in the documented example).
+  operations: [getSources, queryTransactions]
+- status: 403
+  title: Forbidden
+  detail: The request was rejected for security reasons, contact Ledge for assistance.
+  remediation: >-
+    Check the caller's role under Ledge's fine-grained permissions model — a
+    View-only role cannot reach write-scoped resources, and custom roles may
+    deny specific resources.
+  operations: [getSources, queryTransactions]
+- status: 404
+  title: Not Found
+  detail: The requested resource was not found.
+  remediation: >-
+    Verify the orgId path segment (found on the Developers page) and any
+    datasetId in the request body.
+  operations: [getSources, queryTransactions]
+- status: 500
+  title: Internal Server Error
+  detail: >-
+    An error occurred on the Ledge side, and is closely monitored. Contact Ledge
+    for more details and remediation.
+  remediation: >-
+    Retry; if it persists, contact Ledge and quote the `request` id from the
+    error envelope.
+  operations: [getSources, queryTransactions]
+- status: 503
+  title: Service Unavailable
+  detail: >-
+    An error occurred on the Ledge side, and is closely monitored. Contact Ledge
+    for more details and remediation.
+  remediation: >-
+    Retry with backoff and check https://status.ledge.co for a live incident.
+  operations: [getSources, queryTransactions]
+- status: 504
+  title: Gateway Timeout
+  detail: The request exceeded the timeout.
+  remediation: >-
+    Try a smaller `limit` value, narrow the from/to window, or add filters to
+    the search[] array; otherwise contact Ledge for assistance.
+  operations: [queryTransactions]
+notes:
+- >-
+  Ledge publishes no application-level error code vocabulary (no string error
+  codes such as `invalid_dataset`) — the documented `code` field carries the
+  HTTP status in every response observed.
+- >-
+  No rate-limit (429) status is documented or observed; 504 with a smaller
+  `limit` is the published backpressure remedy.

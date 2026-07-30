@@ -1,0 +1,16 @@
+{
+  "provider": "ledge",
+  "sources": [
+    "ledge-sources-api-openapi.yml",
+    "ledge-transactions-api-openapi.yml"
+  ],
+  "outputs": [
+    "ledge-sources-api-openapi.yml",
+    "ledge-transactions-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

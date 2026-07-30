@@ -1,0 +1,137 @@
+generated: '2026-07-19'
+method: derived
+source: >-
+  openapi/ledge-api-openapi.yml — $ref links and id-reference fields between
+  schemas, cross-checked against the published object descriptions at
+  https://docs.ledge.co/api-reference/sources and
+  https://docs.ledge.co/api-reference/transactions.
+description: >-
+  The entity-relationship graph exposed by the Ledge REST API. A Source is a
+  connected system (bank, payment service provider, ERP, database, file feed);
+  each Source fetches one or more Datasets; each Dataset carries Transactions;
+  Transactions are reconciled to one another through Matches. Filter grammar
+  types (SearchQuery and friends) are query constructs rather than domain
+  entities and are listed separately.
+identifiers:
+  format: UUID
+  prefixes: none — Ledge does not use type-prefixed object ids
+  note: >-
+    Every entity id (orgId, Source.id, Dataset.id, Transaction.id) is a bare
+    UUID, so an id is not self-describing; callers must track which collection
+    an id came from.
+entities:
+- name: Organization
+  id_field: orgId
+  description: >-
+    The tenant. Not returned as an object by any published operation — it exists
+    only as the required path segment /v1/api/{orgId}/, and the value is found on
+    the Ledge Developers page.
+  relationships:
+  - type: has_many
+    target: Source
+    via: path scope /v1/api/{orgId}/sources
+- name: Source
+  schema: Source
+  id_field: id
+  description: >-
+    A connected data source, including information on fetching times, files
+    fetched, and any issues with fetching or parsing the data.
+  operations: [getSources]
+  relationships:
+  - type: has_many
+    target: Dataset
+    via: datasets
+- name: Dataset
+  schema: Dataset
+  id_field: id
+  description: >-
+    A named, revisioned collection of records fetched from a Source. Carries
+    freshness signals (lastReceived, latestTimestamp) and ingestion health
+    (failures, lastFile).
+  status_values: [pending, active, deactivated]
+  relationships:
+  - type: belongs_to
+    target: Source
+    via: nested under Source.datasets
+  - type: has_many
+    target: Transaction
+    via: Transaction.datasetId
+  - type: has_many
+    target: Failure
+    via: failures
+  - type: has_one
+    target: FetchedFile
+    via: lastFile
+- name: Transaction
+  schema: Transaction
+  id_field: id
+  description: >-
+    A single financial line item, its reconciliation status and its matches.
+  operations: [queryTransactions]
+  status_values: [none, partial, full, informative, out of scope]
+  relationships:
+  - type: belongs_to
+    target: Dataset
+    via: datasetId
+  - type: has_many
+    target: Match
+    via: incomingMatches — matches in which this transaction is the origin
+  - type: has_many
+    target: Match
+    via: outgoingMatches — matches in which this transaction is the target
+- name: Match
+  schema: Match
+  description: >-
+    A reconciliation link between two Transactions, directional: the origin
+    transaction lists it under incomingMatches, the target under
+    outgoingMatches. The Ledge API reference names the Match[] type but does not
+    publish its field-level schema, so no properties are asserted.
+  relationships:
+  - type: belongs_to
+    target: Transaction
+    via: origin (incomingMatches)
+  - type: belongs_to
+    target: Transaction
+    via: target (outgoingMatches)
+- name: Failure
+  schema: Failure
+  description: A typed, counted description of a fetch or parse failure on a Dataset.
+  relationships:
+  - type: belongs_to
+    target: Dataset
+    via: Dataset.failures
+- name: FetchedFile
+  schema: FetchedFile
+  description: The last file received into a Dataset, with its name and fetch time.
+  relationships:
+  - type: belongs_to
+    target: Dataset
+    via: Dataset.lastFile
+query_types:
+  description: >-
+    Query-grammar constructs, not domain entities — see
+    conventions/ledge-conventions.yml for the filter semantics.
+  types:
+  - TransactionQuery
+  - SearchQuery
+  - SearchFilter
+  - TextFilter
+  - BooleanFilter
+  - DateFilter
+  - NumberFilter
+  - MoneyFilter
+  - NumberExpression
+  - NumberRange
+graph:
+  Organization: [Source]
+  Source: [Dataset]
+  Dataset: [Transaction, Failure, FetchedFile]
+  Transaction: [Match]
+  Match: [Transaction]
+notes:
+- >-
+  The graph is read-only over the published API: there is no documented
+  operation to create, update or delete a Source, Dataset, Transaction or Match.
+- >-
+  Transactions are only reachable by querying a Dataset, so the practical
+  traversal is always getSources -> pick a Dataset id -> queryTransactions.

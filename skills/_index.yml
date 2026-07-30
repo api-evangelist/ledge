@@ -1,0 +1,24 @@
+generated: '2026-07-19'
+method: generated
+source: >-
+  Packaged Agent Skills generated from openapi/ledge-api-openapi.yml. Every step
+  is grounded in an operationId verified verbatim in that description; the filter
+  grammar is transcribed from
+  https://docs.ledge.co/api-reference/transactions/querying, and cross-cutting
+  rules cite ../conventions/, ../errors/ and ../authentication/. Searched first
+  for provider-published skills or an AGENTS.md — Ledge publishes neither
+  (github.com/goledge has 0 public repositories; the documentation corpus has no
+  agent-skill surface).
+description: >-
+  Two skills covering the full published Ledge API surface: verifying that the
+  ingested data is current and clean, then extracting the reconciliation
+  exception list a finance team works to close a period.
+skills:
+- file: ledge-audit-source-freshness.md
+  name: Audit Ledge source freshness and ingestion health
+  api: openapi/ledge-api-openapi.yml
+  operations: [getSources]
+- file: ledge-find-unreconciled-transactions.md
+  name: Find and investigate unreconciled Ledge transactions
+  api: openapi/ledge-api-openapi.yml
+  operations: [getSources, queryTransactions]

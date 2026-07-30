@@ -1,0 +1,70 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  openapi/ledge-api-openapi.yml (oauth2 securityScheme) plus a search of the
+  Ledge documentation for a scopes or permissions reference:
+  https://docs.ledge.co/api-reference/fundamentals/authentication and
+  https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions.
+docs: https://docs.ledge.co/api-reference/fundamentals/fine-grained-permissions
+description: >-
+  Ledge authorizes API calls with OAuth 2.0 client_credentials but publishes NO
+  named OAuth scopes. The documented token request sends only grant_type,
+  client_id, client_secret and audience — there is no scope parameter — and the
+  token response returns access_token, token_type and expires_in with no scope
+  claim. Authorization is instead enforced by a role-based fine-grained
+  permissions model. The empty scopes[] below is a verified absence, not a gap
+  in this capture.
+scopes_published: false
+scopes: []
+authorization_model:
+  type: role-based fine-grained permissions
+  description: >-
+    Administrators can define permissions that fit their organization's specific
+    needs with role-based access, based on either built-in or custom roles.
+  builtin_roles:
+  - name: Administrator
+    access: Full access to all resources; user management control
+  - name: Full member
+    access: Full access to all resources
+  - name: View-only
+    access: Read-only access to all resources
+  custom_roles:
+    supported: true
+    description: Custom roles can be used to allow, or deny, access to specific resources.
+  enforcement: >-
+    A denied resource returns HTTP 403 — "The request was rejected for security
+    reasons, contact Ledge for assistance."
+schemes:
+- name: oauth2ClientCredentials
+  source: openapi/ledge-api-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://goledge.us.auth0.com/oauth/token
+    scopes: []
+  description: >-
+    Obtain a client ID and generate a client secret on the Ledge Developers page
+    (https://app.goledge.io/developers), then request an access token from the
+    Ledge Auth0 tenant using the client_credentials grant.
+identity_provider_scopes:
+  note: >-
+    The underlying Auth0 tenant advertises the standard OIDC scopes below in its
+    discovery document (well-known/ledge-openid-configuration.json). These are
+    Auth0 platform defaults for interactive sign-in, NOT Ledge API authorization
+    scopes, and must not be read as a Ledge permission model.
+  source: https://goledge.us.auth0.com/.well-known/openid-configuration
+  scopes_supported:
+  - openid
+  - profile
+  - offline_access
+  - name
+  - given_name
+  - family_name
+  - nickname
+  - email
+  - email_verified
+  - picture
+  - created_at
+  - identities
+  - phone
+  - address
+detail: authentication/ledge-authentication.yml

@@ -1,0 +1,95 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://www.ledge.co/support-policy (SLA and Support Policy),
+  https://status.ledge.co, https://docs.ledge.co/changelog, and
+  openapi/ledge-api-openapi.yml.
+description: >-
+  Versioning, deprecation posture, service-level commitments and operational
+  status for the Ledge API and platform.
+versioning:
+  scheme: URI path version
+  mechanism: The major version is the first path segment of every operation (/v1/api/...).
+  current: v1
+  header: null
+  docs: https://docs.ledge.co/api-reference/getting-started
+  notes: >-
+    Ledge does not publish an API versioning policy, a version-negotiation
+    header, or a list of supported versions. Only v1 has ever been documented.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  changelog: https://docs.ledge.co/changelog
+  notes: >-
+    No deprecation or end-of-life policy is published, and no RFC 8594 Sunset /
+    Deprecation headers are documented. Product changes are announced in the
+    seasonal changelog. This is a genuine gap rather than an undiscovered page.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No operation, parameter or schema in openapi/ledge-api-openapi.yml is flagged
+  deprecated — the published API surface is two operations, both current.
+sla:
+  url: https://www.ledge.co/support-policy
+  published: true
+  uptime_target: 99.9%
+  measurement_period: monthly
+  service_credits:
+  - availability_band: 99.9% > availability > 99%
+    credit: 5% of the platform monthly fee
+  - availability_band: 99% > availability > 95%
+    credit: 10% of the platform monthly fee
+  - availability_band: 95% > availability
+    credit: 30% of the platform monthly fee
+  credit_request_window: Written request within 15 business days of the Downtime Event
+  credit_form: Applied to the customer's next invoice; not redeemable for cash
+  exclusions:
+  - >-
+    Scheduled maintenance windows notified at least 1 week in advance, not
+    exceeding 4 hours per calendar month
+  - >-
+    Outages caused by factors outside Ledge's reasonable control (internet
+    outages, force majeure, customer-specific issues)
+  - Issues arising from customer misuse of the Service
+status_page:
+  url: https://status.ledge.co
+  platform: Better Stack
+  description: >-
+    Real-time updates on service disruptions and planned maintenance, referenced
+    directly from the published SLA.
+support:
+  policy_url: https://www.ledge.co/support-policy
+  email: support@ledge.co
+  tiers:
+  - name: Standard
+    hours: Monday through Friday, 9:00am to 5:30pm EST
+    includes:
+    - Product documentation, release notes and knowledge base
+    - Online help desk
+  - name: Premium
+    hours: Monday through Friday, 8:00am to 8:00pm EST, plus weekend coverage
+    includes:
+    - Dedicated R&D engineer for onboarding and ongoing changes
+    - Dedicated Customer Success Manager
+    - Consultation hours with finance and payments experts
+  channels:
+  - Online knowledge base
+  - Email (support@ledge.co)
+  - Helpdesk ticketing system (submissions accepted 24/7/365)
+  - Dedicated Slack channels with Customer Support and Solution Engineering
+  response_times:
+  - priority: High
+    description: Critical issue impacting live production functionality
+    initial_response: 3 hours
+  - priority: Medium
+    description: Issue impacting specific features or users; functionality partially available
+    initial_response: 12 hours
+  - priority: Low
+    description: Non-critical
+    initial_response: null
+rate_limits:
+  published: false
+  notes: >-
+    No rate-limit policy or throttling headers are published. HTTP 504 with a
+    recommendation to reduce `limit` is the only documented backpressure signal.
