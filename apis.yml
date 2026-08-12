@@ -96,6 +96,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/ledge-api-overlay.yaml
 - type: Website
   url: https://www.ledge.co
 - type: Portal
