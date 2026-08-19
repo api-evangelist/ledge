@@ -1,0 +1,415 @@
+{
+  "item": [
+    {
+      "id": "c720b191-1136-432b-9981-68be4b135334",
+      "name": "Sources",
+      "description": {
+        "content": "Data sources connected to Ledge (banks, payment service providers, ERPs, databases) and the datasets fetched from them.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "08f500e0-405f-4c2c-b3b0-42d044431724",
+          "name": "List sources",
+          "request": {
+            "name": "List sources",
+            "description": {
+              "content": "Retrieve the list of Sources, including information on fetching times, files fetched, and any issues with fetching or parsing the data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "api",
+                ":orgId",
+                "sources"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "orgId",
+                  "description": "(Required) Organization ID, can be found on the Developers page (https://app.goledge.io/developers)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0f693a80-7065-4892-8501-2211fcdd6eff",
+              "name": "The request was successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "api",
+                    ":orgId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) Organization ID, can be found on the Developers page (https://app.goledge.io/developers)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"a6989989-92e9-c4a6-2298-c387d2523e17\",\n    \"datasets\": [\n      {\n        \"id\": \"792cae14-f89f-54f6-b7ed-0589fb0aed35\",\n        \"name\": \"string\",\n        \"revision\": 6447,\n        \"status\": \"deactivated\",\n        \"createdAt\": 2887,\n        \"lastUpdatedBy\": \"string\",\n        \"lastUpdatedAt\": 8670,\n        \"lastReceived\": 824,\n        \"latestTimestamp\": 4807,\n        \"failures\": [\n          {\n            \"type\": \"string\",\n            \"count\": 6048\n          },\n          {\n            \"type\": \"string\",\n            \"count\": 8966\n          }\n        ],\n        \"lastFile\": {\n          \"name\": \"string\",\n          \"fetchTime\": 3304\n        }\n      },\n      {\n        \"id\": \"3cbff47a-17aa-fe27-57c5-e0df655ac7c2\",\n        \"name\": \"string\",\n        \"revision\": 1444,\n        \"status\": \"deactivated\",\n        \"createdAt\": 1232,\n        \"lastUpdatedBy\": \"string\",\n        \"lastUpdatedAt\": 766,\n        \"lastReceived\": 4105,\n        \"latestTimestamp\": 7054,\n        \"failures\": [\n          {\n            \"type\": \"string\",\n            \"count\": 1660\n          },\n          {\n            \"type\": \"string\",\n            \"count\": 9571\n          }\n        ],\n        \"lastFile\": {\n          \"name\": \"string\",\n          \"fetchTime\": 1729\n        }\n      }\n    ]\n  },\n  {\n    \"id\": \"dd248e47-4371-50e6-d6f8-c0493a3688e6\",\n    \"datasets\": [\n      {\n        \"id\": \"7b355d1a-51c7-61e3-a824-6f4fce3a4ccc\",\n        \"name\": \"string\",\n        \"revision\": 1873,\n        \"status\": \"deactivated\",\n        \"createdAt\": 4379,\n        \"lastUpdatedBy\": \"string\",\n        \"lastUpdatedAt\": 8895,\n        \"lastReceived\": 7413,\n        \"latestTimestamp\": 2086,\n        \"failures\": [\n          {\n            \"type\": \"string\",\n            \"count\": 214\n          },\n          {\n            \"type\": \"string\",\n            \"count\": 7931\n          }\n        ],\n        \"lastFile\": {\n          \"name\": \"string\",\n          \"fetchTime\": 5407\n        }\n      },\n      {\n        \"id\": \"1de6b4ae-ed35-a28d-3857-3b279219c827\",\n        \"name\": \"string\",\n        \"revision\": 5423,\n        \"status\": \"pending\",\n        \"createdAt\": 1021,\n        \"lastUpdatedBy\": \"string\",\n        \"lastUpdatedAt\": 6714,\n        \"lastReceived\": 6511,\n        \"latestTimestamp\": 4749,\n        \"failures\": [\n          {\n            \"type\": \"string\",\n            \"count\": 42\n          },\n          {\n            \"type\": \"string\",\n            \"count\": 9702\n          }\n        ],\n        \"lastFile\": {\n          \"name\": \"string\",\n          \"fetchTime\": 3427\n        }\n      }\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "49ae5c27-cfef-4faa-b2c7-3930648e74a5",
+              "name": "The request was unauthorized, please check your API key and contact Ledge for assistance",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "api",
+                    ":orgId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) Organization ID, can be found on the Developers page (https://app.goledge.io/developers)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": 401,\n    \"status\": \"Unauthorized\",\n    \"request\": \"c1eb84b6-74e8-493d-9dfc-69f2f1f99e52\",\n    \"message\": \"The request could not be authorized\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e1e7e00-f61d-4692-a662-99302247c659",
+              "name": "The request was rejected for security reasons, contact Ledge for assistance",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "api",
+                    ":orgId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) Organization ID, can be found on the Developers page (https://app.goledge.io/developers)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"status\": \"string\",\n    \"request\": \"f3546087-d9ff-c54d-8684-efd390377a3c\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc041d32-3525-4cc8-9c07-ad61529caddd",
+              "name": "The requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "api",
+                    ":orgId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) Organization ID, can be found on the Developers page (https://app.goledge.io/developers)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"status\": \"string\",\n    \"request\": \"f3546087-d9ff-c54d-8684-efd390377a3c\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "14f79561-1adf-40a7-911a-c44edaf7b79b",
+              "name": "An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "api",
+                    ":orgId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) Organization ID, can be found on the Developers page (https://app.goledge.io/developers)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"status\": \"string\",\n    \"request\": \"f3546087-d9ff-c54d-8684-efd390377a3c\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "69d9946d-a273-490c-ba30-4c2b9db55030",
+              "name": "An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "api",
+                    ":orgId",
+                    "sources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "orgId",
+                      "description": "(Required) Organization ID, can be found on the Developers page (https://app.goledge.io/developers)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"status\": \"string\",\n    \"request\": \"f3546087-d9ff-c54d-8684-efd390377a3c\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.goledge.io",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://goledge.us.auth0.com/oauth/token"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "97d3579d-6bf0-46e5-83c8-b23060e573fc",
+    "name": "Ledge Sources API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Ledge REST API provides direct access to Transaction data, including transactions, matching and reconciliation status. It also provides Sources information, such as fetching times, files fetched, and any issues with fetching or parsing the data. Ledge is an AI-powered close management, reconciliation and payment-operations platform for finance teams.\n\nContact Support:\n Name: Ledge",
+      "type": "text/plain"
+    }
+  }
+}

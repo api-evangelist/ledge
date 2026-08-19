@@ -2,13 +2,10 @@ generated: '2026-07-19'
 method: derived
 status: candidate
 source: openapi/ledge-api-openapi.yml
-description: >-
-  Ledge does not publish an MCP server. Searched the documentation corpus
-  (docs.ledge.co/llms-full.txt — no occurrence of "MCP"), the ledge.co site and
-  the github.com/goledge organisation (0 public repositories); nothing found.
-  The tool list below is a CANDIDATE derived from the two published REST
-  operations, offered as a design proposal rather than as anything Ledge ships.
-  Do not treat these tool names as real.
+description: Ledge does not publish an MCP server. Searched the documentation corpus (docs.ledge.co/llms-full.txt
+  — no occurrence of "MCP"), the ledge.co site and the github.com/goledge organisation (0 public repositories);
+  nothing found. The tool list below is a CANDIDATE derived from the two published REST operations, offered
+  as a design proposal rather than as anything Ledge ships. Do not treat these tool names as real.
 searched:
 - target: https://docs.ledge.co/llms-full.txt
   result: no occurrence of "MCP"
@@ -20,9 +17,8 @@ server: null
 tools:
 - name: ledge_list_sources
   candidate: true
-  description: >-
-    List the data sources connected to a Ledge organization, with per-dataset
-    fetch times, last file received, freshness and ingestion failures.
+  description: List the data sources connected to a Ledge organization, with per-dataset fetch times,
+    last file received, freshness and ingestion failures.
   operation: getSources
   method: GET
   path: /v1/api/{orgId}/sources
@@ -32,10 +28,8 @@ tools:
     description: Organization UUID from the Ledge Developers page.
 - name: ledge_query_transactions
   candidate: true
-  description: >-
-    Query transactions in a dataset with typed composable filters and a time
-    window, returning each transaction's reconciliation status and its incoming
-    and outgoing matches.
+  description: Query transactions in a dataset with typed composable filters and a time window, returning
+    each transaction's reconciliation status and its incoming and outgoing matches.
   operation: queryTransactions
   method: POST
   path: /v1/api/{orgId}/transactions
@@ -65,11 +59,13 @@ tools:
     required: false
     description: Page offset, maximum 500.
 notes:
-- >-
-  Auth for any such server would be the documented OAuth 2.0 client_credentials
-  grant against https://goledge.us.auth0.com/oauth/token — see
-  authentication/ledge-authentication.yml.
-- >-
-  Both candidate tools are read-only; the published Ledge API exposes no write
-  operations, so an MCP server over it would be safe to expose without
-  write-scoped confirmation prompts.
+- Auth for any such server would be the documented OAuth 2.0 client_credentials grant against https://goledge.us.auth0.com/oauth/token
+  — see authentication/ledge-authentication.yml.
+- Both candidate tools are read-only; the published Ledge API exposes no write operations, so an MCP server
+  over it would be safe to expose without write-scoped confirmation prompts.
+deployment:
+  mode: none
+  verified: derived
+  tools: 2
+  checked: '2026-08-12'
+  source: catalog MCP census
