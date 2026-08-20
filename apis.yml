@@ -76,6 +76,8 @@ apis:
   humanURL: https://docs.ledge.co/api-reference/getting-started
   baseURL: https://api.goledge.io
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
