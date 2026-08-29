@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Ledge Sources Transactions API
   version: '1.0'
@@ -85,49 +85,22 @@ paths:
         '504':
           $ref: '#/components/responses/GatewayTimeout'
 components:
-  parameters:
-    orgId:
-      name: orgId
-      in: path
-      required: true
-      description: Organization ID, can be found on the Developers page (https://app.goledge.io/developers).
-      schema:
-        type: string
-        format: uuid
   schemas:
-    DateFilter:
+    NumberFilter:
       type: object
       properties:
         type:
           type: string
-          const: date
+          const: number
         value:
-          allOf:
+          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
+          oneOf:
+          - type: number
+          - type: array
+            items:
+              type: number
+          - $ref: '#/components/schemas/NumberExpression'
           - $ref: '#/components/schemas/NumberRange'
-          description: A NumberRange filter. All numbers in milliseconds.
-    NumberExpression:
-      type: object
-      properties:
-        operator:
-          type: string
-          enum:
-          - ne
-          - ge
-          - gt
-          - le
-          - lt
-        value:
-          type: number
-          description: The filter value to apply.
-    SearchQuery:
-      type: object
-      description: Ledge uses a simple composable typed filter.
-      properties:
-        path:
-          type: string
-          description: Name of transaction field to apply the query to
-        search:
-          $ref: '#/components/schemas/SearchFilter'
     TextFilter:
       type: object
       properties:
@@ -143,6 +116,86 @@ components:
               type: string
         exact:
           type: boolean
+    NumberExpression:
+      type: object
+      properties:
+        operator:
+          type: string
+          enum:
+          - ne
+          - ge
+          - gt
+          - le
+          - lt
+        value:
+          type: number
+          description: The filter value to apply.
+    MoneyFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: money
+        currencies:
+          type: array
+          description: A collection of ISO 4217 currency codes.
+          items:
+            type: string
+        value:
+          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
+          oneOf:
+          - type: number
+          - type: array
+            items:
+              type: number
+          - $ref: '#/components/schemas/NumberExpression'
+          - $ref: '#/components/schemas/NumberRange'
+    SearchQuery:
+      type: object
+      description: Ledge uses a simple composable typed filter.
+      properties:
+        path:
+          type: string
+          description: Name of transaction field to apply the query to
+        search:
+          $ref: '#/components/schemas/SearchFilter'
+    Match:
+      type: object
+      description: A reconciliation match between two transactions. The Ledge API reference names the Match[] type on incomingMatches/outgoingMatches but does not publish its field-level schema, so no properties are asserted here.
+    TransactionQuery:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          format: uuid
+          description: Source ID, see Sources for more details.
+        limit:
+          type: integer
+          description: Number of records to fetch.
+        offset:
+          type: integer
+          description: Offset into the result set. The maximum offset value is 500.
+          maximum: 500
+        from:
+          type: integer
+          description: Transaction epoch timestamp in milliseconds from which to fetch.
+        to:
+          type: integer
+          description: Transaction epoch timestamp in milliseconds to which to fetch.
+        integrationId:
+          type: string
+          format: uuid
+          description: Integration identifier, shown in the documented pagination examples.
+        search:
+          type: array
+          description: An array of filters, with an AND operator between criteria.
+          items:
+            $ref: '#/components/schemas/SearchQuery'
+        columns:
+          type: array
+          description: List of columns to include in the response.
+          items:
+            $ref: '#/components/schemas/SearchQuery'
     SearchFilter:
       description: The search filter to apply. Can be any one of the following filter types.
       oneOf:
@@ -151,6 +204,16 @@ components:
       - $ref: '#/components/schemas/DateFilter'
       - $ref: '#/components/schemas/NumberFilter'
       - $ref: '#/components/schemas/MoneyFilter'
+    DateFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: date
+        value:
+          allOf:
+          - $ref: '#/components/schemas/NumberRange'
+          description: A NumberRange filter. All numbers in milliseconds.
     NumberRange:
       type: object
       properties:
@@ -175,48 +238,6 @@ components:
         value:
           type: boolean
           description: The filter value to apply.
-    NumberFilter:
-      type: object
-      properties:
-        type:
-          type: string
-          const: number
-        value:
-          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
-          oneOf:
-          - type: number
-          - type: array
-            items:
-              type: number
-          - $ref: '#/components/schemas/NumberExpression'
-          - $ref: '#/components/schemas/NumberRange'
-    Error:
-      type: object
-      description: Errors are returned as JSON objects with an `error` envelope. The documented shape carries `code` and `message`; live responses observed on api.goledge.io additionally carry `status` and a `request` correlation id.
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              description: Error code (the HTTP status code in observed responses).
-              oneOf:
-              - type: string
-              - type: integer
-            status:
-              type: string
-              description: Reason phrase for the error.
-            request:
-              type: string
-              format: uuid
-              description: Correlation id for the request, quote it when contacting Ledge support.
-            message:
-              type: string
-              description: Human-readable description of the error.
-      required:
-      - error
-    Match:
-      type: object
-      description: A reconciliation match between two transactions. The Ledge API reference names the Match[] type on incomingMatches/outgoingMatches but does not publish its field-level schema, so no properties are asserted here.
     Transaction:
       type: object
       properties:
@@ -256,73 +277,31 @@ components:
         timestamp:
           type: integer
           description: Epoch timestamp in milliseconds.
-    TransactionQuery:
+    Error:
       type: object
+      description: Errors are returned as JSON objects with an `error` envelope. The documented shape carries `code` and `message`; live responses observed on api.goledge.io additionally carry `status` and a `request` correlation id.
       properties:
-        datasetId:
-          type: string
-          format: uuid
-          description: Source ID, see Sources for more details.
-        limit:
-          type: integer
-          description: Number of records to fetch.
-        offset:
-          type: integer
-          description: Offset into the result set. The maximum offset value is 500.
-          maximum: 500
-        from:
-          type: integer
-          description: Transaction epoch timestamp in milliseconds from which to fetch.
-        to:
-          type: integer
-          description: Transaction epoch timestamp in milliseconds to which to fetch.
-        integrationId:
-          type: string
-          format: uuid
-          description: Integration identifier, shown in the documented pagination examples.
-        search:
-          type: array
-          description: An array of filters, with an AND operator between criteria.
-          items:
-            $ref: '#/components/schemas/SearchQuery'
-        columns:
-          type: array
-          description: List of columns to include in the response.
-          items:
-            $ref: '#/components/schemas/SearchQuery'
-    MoneyFilter:
-      type: object
-      properties:
-        type:
-          type: string
-          const: money
-        currencies:
-          type: array
-          description: A collection of ISO 4217 currency codes.
-          items:
-            type: string
-        value:
-          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
-          oneOf:
-          - type: number
-          - type: array
-            items:
-              type: number
-          - $ref: '#/components/schemas/NumberExpression'
-          - $ref: '#/components/schemas/NumberRange'
+        error:
+          type: object
+          properties:
+            code:
+              description: Error code (the HTTP status code in observed responses).
+              oneOf:
+              - type: string
+              - type: integer
+            status:
+              type: string
+              description: Reason phrase for the error.
+            request:
+              type: string
+              format: uuid
+              description: Correlation id for the request, quote it when contacting Ledge support.
+            message:
+              type: string
+              description: Human-readable description of the error.
+      required:
+      - error
   responses:
-    BadRequest:
-      description: The input data was malformed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     ServiceUnavailable:
       description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
       content:
@@ -341,8 +320,14 @@ components:
               status: Unauthorized
               request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
               message: The request could not be authorized
-    GatewayTimeout:
-      description: The request exceeded the timeout. Try a smaller limit query parameter or contact Ledge for assistance.
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The input data was malformed
       content:
         application/json:
           schema:
@@ -359,6 +344,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    GatewayTimeout:
+      description: The request exceeded the timeout. Try a smaller limit query parameter or contact Ledge for assistance.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    orgId:
+      name: orgId
+      in: path
+      required: true
+      description: Organization ID, can be found on the Developers page (https://app.goledge.io/developers).
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2
