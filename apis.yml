@@ -13,6 +13,18 @@ description: >-
   its Sources and Transactions data, authorized with OAuth 2.0 client
   credentials. Founded in 2022, the company raised a $9M seed round led by NEA
   with participation from Vertex Ventures, FJ Labs and Picus Capital.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
