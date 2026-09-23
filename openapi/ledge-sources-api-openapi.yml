@@ -48,16 +48,97 @@ paths:
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
 components:
-  parameters:
-    orgId:
-      name: orgId
-      in: path
-      required: true
-      description: Organization ID, can be found on the Developers page (https://app.goledge.io/developers).
-      schema:
-        type: string
-        format: uuid
+  responses:
+    ServiceUnavailable:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The request was unauthorized, please check your API key and contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: 401
+              status: Unauthorized
+              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+              message: The request could not be authorized
+    InternalServerError:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The request was rejected for security reasons, contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    FetchedFile:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The file name.
+        fetchTime:
+          type: integer
+          description: Epoch timestamp in milliseconds when the file was fetched.
+    Dataset:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The dataset ID
+        name:
+          type: string
+          description: The dataset name
+        revision:
+          type: integer
+          description: An incremental integer representing the current dataset revision.
+        status:
+          type: string
+          description: The dataset status.
+          enum:
+          - pending
+          - active
+          - deactivated
+        createdAt:
+          type: integer
+          description: Epoch timestamp in milliseconds for creation of the dataset.
+        lastUpdatedBy:
+          type: string
+          description: The last principal to update the dataset.
+        lastUpdatedAt:
+          type: integer
+          description: Epoch timestamp in milliseconds for updates to the dataset (e.g. schema changes, rename, etc.).
+        lastReceived:
+          type: integer
+          description: Epoch timestamp in milliseconds for last time the dataset was updated with new data.
+        latestTimestamp:
+          type: integer
+          description: Epoch timestamp in milliseconds for the latest transaction on the dataset (i.e. "as-of" indication).
+        failures:
+          type: array
+          description: A collection of descriptions of failures in fetching and parsing data for the dataset.
+          items:
+            $ref: '#/components/schemas/Failure'
+        lastFile:
+          allOf:
+          - $ref: '#/components/schemas/FetchedFile'
+          description: Details of the last file received into the dataset.
     Source:
       type: object
       description: A data source connected to Ledge and the datasets fetched from it.
@@ -104,96 +185,15 @@ components:
         count:
           type: integer
           description: Number of occurrences of the failure.
-    Dataset:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The dataset ID
-        name:
-          type: string
-          description: The dataset name
-        revision:
-          type: integer
-          description: An incremental integer representing the current dataset revision.
-        status:
-          type: string
-          description: The dataset status.
-          enum:
-          - pending
-          - active
-          - deactivated
-        createdAt:
-          type: integer
-          description: Epoch timestamp in milliseconds for creation of the dataset.
-        lastUpdatedBy:
-          type: string
-          description: The last principal to update the dataset.
-        lastUpdatedAt:
-          type: integer
-          description: Epoch timestamp in milliseconds for updates to the dataset (e.g. schema changes, rename, etc.).
-        lastReceived:
-          type: integer
-          description: Epoch timestamp in milliseconds for last time the dataset was updated with new data.
-        latestTimestamp:
-          type: integer
-          description: Epoch timestamp in milliseconds for the latest transaction on the dataset (i.e. "as-of" indication).
-        failures:
-          type: array
-          description: A collection of descriptions of failures in fetching and parsing data for the dataset.
-          items:
-            $ref: '#/components/schemas/Failure'
-        lastFile:
-          allOf:
-          - $ref: '#/components/schemas/FetchedFile'
-          description: Details of the last file received into the dataset.
-    FetchedFile:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The file name.
-        fetchTime:
-          type: integer
-          description: Epoch timestamp in milliseconds when the file was fetched.
-  responses:
-    Unauthorized:
-      description: The request was unauthorized, please check your API key and contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              code: 401
-              status: Unauthorized
-              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
-              message: The request could not be authorized
-    InternalServerError:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: The request was rejected for security reasons, contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServiceUnavailable:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  parameters:
+    orgId:
+      name: orgId
+      in: path
+      required: true
+      description: Organization ID, can be found on the Developers page (https://app.goledge.io/developers).
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

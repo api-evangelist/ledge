@@ -1,8 +1,7 @@
 {
   "provider": "ledge",
   "sources": [
-    "ledge-sources-api-openapi.yml",
-    "ledge-transactions-api-openapi.yml"
+    "_ae-authored/ledge-api-openapi.yml"
   ],
   "outputs": [
     "ledge-sources-api-openapi.yml",
@@ -12,9 +11,12 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "ledge-sources-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "ledge-transactions-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "ledge-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "ledge-sources-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ledge-transactions-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

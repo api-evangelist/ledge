@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Ledge Sources Transactions API
+  title: Ledge Transactions API
   version: '1.0'
   x-generated: '2026-07-19'
   x-method: generated
@@ -85,83 +85,56 @@ paths:
         '504':
           $ref: '#/components/responses/GatewayTimeout'
 components:
+  responses:
+    ServiceUnavailable:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The input data was malformed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The request was unauthorized, please check your API key and contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: 401
+              status: Unauthorized
+              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+              message: The request could not be authorized
+    Forbidden:
+      description: The request was rejected for security reasons, contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GatewayTimeout:
+      description: The request exceeded the timeout. Try a smaller limit query parameter or contact Ledge for assistance.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    NumberFilter:
-      type: object
-      properties:
-        type:
-          type: string
-          const: number
-        value:
-          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
-          oneOf:
-          - type: number
-          - type: array
-            items:
-              type: number
-          - $ref: '#/components/schemas/NumberExpression'
-          - $ref: '#/components/schemas/NumberRange'
-    TextFilter:
-      type: object
-      properties:
-        type:
-          type: string
-          const: string
-        value:
-          description: The text or texts to search for.
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: string
-        exact:
-          type: boolean
-    NumberExpression:
-      type: object
-      properties:
-        operator:
-          type: string
-          enum:
-          - ne
-          - ge
-          - gt
-          - le
-          - lt
-        value:
-          type: number
-          description: The filter value to apply.
-    MoneyFilter:
-      type: object
-      properties:
-        type:
-          type: string
-          const: money
-        currencies:
-          type: array
-          description: A collection of ISO 4217 currency codes.
-          items:
-            type: string
-        value:
-          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
-          oneOf:
-          - type: number
-          - type: array
-            items:
-              type: number
-          - $ref: '#/components/schemas/NumberExpression'
-          - $ref: '#/components/schemas/NumberRange'
-    SearchQuery:
-      type: object
-      description: Ledge uses a simple composable typed filter.
-      properties:
-        path:
-          type: string
-          description: Name of transaction field to apply the query to
-        search:
-          $ref: '#/components/schemas/SearchFilter'
-    Match:
-      type: object
-      description: A reconciliation match between two transactions. The Ledge API reference names the Match[] type on incomingMatches/outgoingMatches but does not publish its field-level schema, so no properties are asserted here.
     TransactionQuery:
       type: object
       properties:
@@ -196,24 +169,6 @@ components:
           description: List of columns to include in the response.
           items:
             $ref: '#/components/schemas/SearchQuery'
-    SearchFilter:
-      description: The search filter to apply. Can be any one of the following filter types.
-      oneOf:
-      - $ref: '#/components/schemas/TextFilter'
-      - $ref: '#/components/schemas/BooleanFilter'
-      - $ref: '#/components/schemas/DateFilter'
-      - $ref: '#/components/schemas/NumberFilter'
-      - $ref: '#/components/schemas/MoneyFilter'
-    DateFilter:
-      type: object
-      properties:
-        type:
-          type: string
-          const: date
-        value:
-          allOf:
-          - $ref: '#/components/schemas/NumberRange'
-          description: A NumberRange filter. All numbers in milliseconds.
     NumberRange:
       type: object
       properties:
@@ -229,15 +184,99 @@ components:
         includeEnd:
           type: boolean
           description: Is inclusive on the upper bound.
-    BooleanFilter:
+    SearchQuery:
+      type: object
+      description: Ledge uses a simple composable typed filter.
+      properties:
+        path:
+          type: string
+          description: Name of transaction field to apply the query to
+        search:
+          $ref: '#/components/schemas/SearchFilter'
+    TextFilter:
       type: object
       properties:
         type:
           type: string
-          const: boolean
+          const: string
         value:
+          description: The text or texts to search for.
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+        exact:
           type: boolean
-          description: The filter value to apply.
+    DateFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: date
+        value:
+          allOf:
+          - $ref: '#/components/schemas/NumberRange'
+          description: A NumberRange filter. All numbers in milliseconds.
+    MoneyFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: money
+        currencies:
+          type: array
+          description: A collection of ISO 4217 currency codes.
+          items:
+            type: string
+        value:
+          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
+          oneOf:
+          - type: number
+          - type: array
+            items:
+              type: number
+          - $ref: '#/components/schemas/NumberExpression'
+          - $ref: '#/components/schemas/NumberRange'
+    NumberFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: number
+        value:
+          description: The filter value to apply, which can be a single value, multiple values, or more specific filters.
+          oneOf:
+          - type: number
+          - type: array
+            items:
+              type: number
+          - $ref: '#/components/schemas/NumberExpression'
+          - $ref: '#/components/schemas/NumberRange'
+    Error:
+      type: object
+      description: Errors are returned as JSON objects with an `error` envelope. The documented shape carries `code` and `message`; live responses observed on api.goledge.io additionally carry `status` and a `request` correlation id.
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              description: Error code (the HTTP status code in observed responses).
+              oneOf:
+              - type: string
+              - type: integer
+            status:
+              type: string
+              description: Reason phrase for the error.
+            request:
+              type: string
+              format: uuid
+              description: Correlation id for the request, quote it when contacting Ledge support.
+            message:
+              type: string
+              description: Human-readable description of the error.
+      required:
+      - error
     Transaction:
       type: object
       properties:
@@ -277,79 +316,40 @@ components:
         timestamp:
           type: integer
           description: Epoch timestamp in milliseconds.
-    Error:
+    NumberExpression:
       type: object
-      description: Errors are returned as JSON objects with an `error` envelope. The documented shape carries `code` and `message`; live responses observed on api.goledge.io additionally carry `status` and a `request` correlation id.
       properties:
-        error:
-          type: object
-          properties:
-            code:
-              description: Error code (the HTTP status code in observed responses).
-              oneOf:
-              - type: string
-              - type: integer
-            status:
-              type: string
-              description: Reason phrase for the error.
-            request:
-              type: string
-              format: uuid
-              description: Correlation id for the request, quote it when contacting Ledge support.
-            message:
-              type: string
-              description: Human-readable description of the error.
-      required:
-      - error
-  responses:
-    ServiceUnavailable:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: The request was unauthorized, please check your API key and contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              code: 401
-              status: Unauthorized
-              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
-              message: The request could not be authorized
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: The input data was malformed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: The request was rejected for security reasons, contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    InternalServerError:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GatewayTimeout:
-      description: The request exceeded the timeout. Try a smaller limit query parameter or contact Ledge for assistance.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+        operator:
+          type: string
+          enum:
+          - ne
+          - ge
+          - gt
+          - le
+          - lt
+        value:
+          type: number
+          description: The filter value to apply.
+    BooleanFilter:
+      type: object
+      properties:
+        type:
+          type: string
+          const: boolean
+        value:
+          type: boolean
+          description: The filter value to apply.
+    Match:
+      type: object
+      description: A reconciliation match between two transactions. The Ledge API reference names the Match[] type on incomingMatches/outgoingMatches but does not publish its field-level schema, so no properties are asserted here.
+    SearchFilter:
+      description: The search filter to apply. Can be any one of the following filter types.
+      oneOf:
+      - $ref: '#/components/schemas/TextFilter'
+      - $ref: '#/components/schemas/BooleanFilter'
+      - $ref: '#/components/schemas/DateFilter'
+      - $ref: '#/components/schemas/NumberFilter'
+      - $ref: '#/components/schemas/MoneyFilter'
   parameters:
     orgId:
       name: orgId
