@@ -48,43 +48,6 @@ paths:
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
 components:
-  responses:
-    ServiceUnavailable:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: The request was unauthorized, please check your API key and contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              code: 401
-              status: Unauthorized
-              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
-              message: The request could not be authorized
-    InternalServerError:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: The request was rejected for security reasons, contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     FetchedFile:
       type: object
@@ -194,6 +157,43 @@ components:
       schema:
         type: string
         format: uuid
+  responses:
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The request was rejected for security reasons, contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The request was unauthorized, please check your API key and contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: 401
+              status: Unauthorized
+              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+              message: The request could not be authorized
+    ServiceUnavailable:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2
