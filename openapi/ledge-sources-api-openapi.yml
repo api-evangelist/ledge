@@ -48,16 +48,44 @@ paths:
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
 components:
+  responses:
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The request was unauthorized, please check your API key and contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: 401
+              status: Unauthorized
+              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
+              message: The request could not be authorized
+    Forbidden:
+      description: The request was rejected for security reasons, contact Ledge for assistance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServiceUnavailable:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    FetchedFile:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The file name.
-        fetchTime:
-          type: integer
-          description: Epoch timestamp in milliseconds when the file was fetched.
     Dataset:
       type: object
       properties:
@@ -102,19 +130,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/FetchedFile'
           description: Details of the last file received into the dataset.
-    Source:
+    Failure:
       type: object
-      description: A data source connected to Ledge and the datasets fetched from it.
       properties:
-        id:
+        type:
           type: string
-          format: uuid
-          description: The Source ID
-        datasets:
-          type: array
-          description: A collection of Dataset objects
-          items:
-            $ref: '#/components/schemas/Dataset'
+          description: The failure type.
+        count:
+          type: integer
+          description: Number of occurrences of the failure.
     Error:
       type: object
       description: Errors are returned as JSON objects with an `error` envelope. The documented shape carries `code` and `message`; live responses observed on api.goledge.io additionally carry `status` and a `request` correlation id.
@@ -139,15 +163,28 @@ components:
               description: Human-readable description of the error.
       required:
       - error
-    Failure:
+    Source:
+      type: object
+      description: A data source connected to Ledge and the datasets fetched from it.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The Source ID
+        datasets:
+          type: array
+          description: A collection of Dataset objects
+          items:
+            $ref: '#/components/schemas/Dataset'
+    FetchedFile:
       type: object
       properties:
-        type:
+        name:
           type: string
-          description: The failure type.
-        count:
+          description: The file name.
+        fetchTime:
           type: integer
-          description: Number of occurrences of the failure.
+          description: Epoch timestamp in milliseconds when the file was fetched.
   parameters:
     orgId:
       name: orgId
@@ -157,43 +194,6 @@ components:
       schema:
         type: string
         format: uuid
-  responses:
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    InternalServerError:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: The request was rejected for security reasons, contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: The request was unauthorized, please check your API key and contact Ledge for assistance
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              code: 401
-              status: Unauthorized
-              request: c1eb84b6-74e8-493d-9dfc-69f2f1f99e52
-              message: The request could not be authorized
-    ServiceUnavailable:
-      description: An error occurred on the Ledge side, and is closely monitored. Contact Ledge for more details and remediation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2
