@@ -64,6 +64,125 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Ledge is a company surfaced as a portfolio company of nea and added to the API Evangelist network as a stub for enrichment. Sector: fintech. This profile is a lead awaiting the enrichment pipeline.
+Ledge is an AI-powered close management, reconciliation and payment-operations platform for finance teams. It centralizes transaction and payment data from a company's entire stack — banks, payment service providers, ERPs, billing systems, data warehouses and file feeds — and automates the work on top of it: multiway transaction matching, account and payment reconciliation, automated cash application, flux analysis, working papers, and journal entries posted back to the ERP with review and approval built in. Its Agent Studio lets teams build AI agents that execute close-checklist tasks, with human-in-the-loop review, rationale, and a queryable audit trail. Ledge exposes a REST API over its Sources and Transactions data, authorized with OAuth 2.0 client credentials. Founded in 2022, the company raised a $9M seed round led by NEA with participation from Vertex Ventures, FJ Labs and Picus Capital.
 
-Backed by: nea — https://www.ledge.co
+**Areas:** Company · Fintech · Accounting · Reconciliation · Financial Close · Payment Operations · Transaction Matching · Cash Application · Journal Entries · AI Agents · ERP Integration · Finance Automation
+
+## Ledge on APIs.io
+
+Everything profiled for Ledge is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/ledge/](https://apis.io/providers/ledge/)** — or go straight to one of the APIs or properties below.
+
+### APIs (2)
+
+- [Ledge Sources API](https://apis.io/apis/ledge/ledge-sources-api/) — Data sources connected to Ledge (banks, payment service providers, ERPs, databases) and the datasets fetched from them.
+- [Ledge Transactions API](https://apis.io/apis/ledge/ledge-transactions-api/) — Transactions, their matches, and their reconciliation status.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [ledge-mcp.yml](https://apis.io/servers/ledge/ledge-mcp-yml/)
+
+#### Collections (2)
+
+Postman and Open Collection request collections.
+
+- [Ledge Sources API](https://apis.io/collections/ledge/open-ledge-sources-api/)
+- [Ledge Sources Transactions API](https://apis.io/collections/ledge/open-ledge-transactions-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Ledge Api Overlay](https://apis.io/overlays/ledge/ledge-api-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Ledge Authentication](https://apis.io/security/ledge/ledge-authentication/)
+- [Ledge Domain Security](https://apis.io/security/ledge/ledge-domain-security/)
+- [Ledge Trust Center](https://apis.io/security/ledge/ledge-trust-center/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Ledge Scopes](https://apis.io/scopes/ledge/ledge-scopes/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.ledge.co)
+- [Documentation](https://docs.ledge.co)
+- [Getting started](https://docs.ledge.co/api-reference/getting-started)
+- [API reference](https://docs.ledge.co/api-reference/getting-started)
+- [Pricing](https://www.ledge.co/pricing)
+- [Support](https://www.ledge.co/support-policy)
+- [Changelog](https://docs.ledge.co/changelog)
+- [Blog](https://www.ledge.co/resources/articles)
+- [Security](https://www.ledge.co/security)
+- [Terms of service](https://www.ledge.co/terms-of-service)
+- [Privacy policy](https://www.ledge.co/privacy-policy)
+- [GitHub](https://github.com/goledge)
+- [Status](https://status.ledge.co)
+
+## API Evangelist rating
+
+**Kin Score 43.1** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 17.2 |
+| Contract governance | 18.2 |
+| Operational transparency | 36.8 |
+| Developer ergonomics | 60.1 |
+| Access clarity | 53.9 |
+
+**Agent readiness 35.6** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 35.7** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/ledge/](https://apis.io/providers/ledge/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Ledge: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/ledge/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
